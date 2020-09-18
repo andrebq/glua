@@ -2,6 +2,7 @@ local fp = require('filepath')
 local p = require('path')
 local base64 = require('base64')
 local template = require('template')
+local env = require('env')
 
 print(fp.from_slash(p.join('a','b','c')))
 print(fp.split_list("a;b;c")[1])
@@ -33,3 +34,21 @@ if err then
 end
 f:write('hello')
 f:close()
+
+
+local execute = require('exec').execute
+ok, exitCode, err = execute("go", "version")
+if not ok then
+    print("ec", exitCode, "err", err)
+end
+
+ok, exitCode, err = execute("this-binary-does-not-exist")
+print(ok, exitCode, err)
+
+
+env.set("HI", "WORLD")
+if env.get("HI") ~= "WORLD" then
+    print("unable to set env value")
+else
+    print("value is OK")
+end

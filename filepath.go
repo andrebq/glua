@@ -3,6 +3,7 @@ package main
 import (
 	"path/filepath"
 
+	"github.com/mitchellh/go-homedir"
 	lua "github.com/yuin/gopher-lua"
 )
 
@@ -18,6 +19,18 @@ func fpJoin(l *lua.LState) int {
 	}
 	l.Pop(t)
 	l.Push(lua.LString(filepath.Join(parts...)))
+	return 1
+}
+
+func fpAbs(l *lua.LState) int {
+	p := l.CheckString(1)
+	l.Pop(l.GetTop())
+	abs, err := filepath.Abs(p)
+	if err != nil {
+		l.Error(lua.LString(err.Error()), 1)
+		return 0
+	}
+	l.Push(lua.LString(abs))
 	return 1
 }
 
@@ -73,5 +86,16 @@ func fpSplitList(l *lua.LState) int {
 		tbl.Append(lua.LString(v))
 	}
 	l.Push(tbl)
+	return 1
+}
+
+func fpHome(l *lua.LState) int {
+	l.Pop(l.GetTop())
+	home, err := homedir.Dir()
+	if err != nil {
+		l.Error(lua.LString(err.Error()), 1)
+		return 0
+	}
+	l.Push(lua.LString(home))
 	return 1
 }

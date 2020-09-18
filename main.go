@@ -191,6 +191,8 @@ func loadLibs(L *lua.LState) {
 		{"filepath", openFilepath},
 		{"base64", openBase64},
 		{"template", openTemplate},
+		{"exec", openExec},
+		{"env", openEnv},
 	} {
 		if err := L.CallByParam(lua.P{
 			Fn:      L.NewFunction(pair.f),
@@ -217,6 +219,8 @@ func openFilepath(l *lua.LState) int {
 		"clean":      fpClean,
 		"split":      fpSplit,
 		"split_list": fpSplitList,
+		"abs":        fpAbs,
+		"home":       fpHome,
 	})
 	l.Push(mod)
 	return 1
@@ -235,6 +239,25 @@ func openBase64(l *lua.LState) int {
 func openTemplate(l *lua.LState) int {
 	mod := l.RegisterModule("template", map[string]lua.LGFunction{
 		"render": tmplRender,
+	})
+	l.Push(mod)
+	return 1
+}
+
+func openExec(l *lua.LState) int {
+	mod := l.RegisterModule("exec", map[string]lua.LGFunction{
+		"execute": exExecute,
+		"pushd":   exPushd,
+		"popd":    exPopd,
+	})
+	l.Push(mod)
+	return 1
+}
+
+func openEnv(l *lua.LState) int {
+	mod := l.RegisterModule("env", map[string]lua.LGFunction{
+		"set": envSet,
+		"get": envGet,
 	})
 	l.Push(mod)
 	return 1
