@@ -249,6 +249,7 @@ func openTemplate(l *lua.LState) int {
 func openExec(l *lua.LState) int {
 	mod := l.RegisterModule("exec", map[string]lua.LGFunction{
 		"execute": exExecute,
+		"readout": exReadout,
 		"pushd":   exPushd,
 		"popd":    exPopd,
 	})

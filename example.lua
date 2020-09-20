@@ -42,6 +42,10 @@ if not ok then
     print("ec", exitCode, "err", err)
 end
 
+local readout = require('exec').readout
+version, ok = readout("go", "version")
+print("readout: ", version)
+
 ok, exitCode, err = execute("this-binary-does-not-exist")
 print(ok, exitCode, err)
 

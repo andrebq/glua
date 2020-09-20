@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -11,6 +12,33 @@ import (
 var (
 	dirStack = []string{}
 )
+
+func exReadout(l *lua.LState) int {
+	s := l.CheckString(1)
+	args := make([]string, l.GetTop()-1)
+	for i := 2; i <= l.GetTop(); i++ {
+		args[i-2] = l.CheckString(i)
+	}
+	l.Pop(l.GetTop())
+	cmd := exec.Command(s, args...)
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stderr
+	buf := &bytes.Buffer{}
+	cmd.Stdout = buf
+
+	err := cmd.Run()
+	if err != nil {
+		l.Push(lua.LNil)
+		l.Push(lua.LFalse)
+		l.Push(lua.LNumber(float64(cmd.ProcessState.ExitCode())))
+		l.Push(lua.LString(err.Error()))
+		return 4
+	}
+	l.Push(lua.LString(buf.String()))
+	l.Push(lua.LTrue)
+	l.Push(lua.LNumber(float64(cmd.ProcessState.ExitCode())))
+	return 3
+}
 
 func exExecute(l *lua.LState) int {
 	s := l.CheckString(1)
