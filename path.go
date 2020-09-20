@@ -2,6 +2,7 @@ package main
 
 import (
 	"path"
+	"strings"
 
 	lua "github.com/yuin/gopher-lua"
 )
@@ -14,7 +15,7 @@ func pJoin(l *lua.LState) int {
 	}
 	parts := make([]string, t)
 	for i := 1; i <= t; i++ {
-		parts[i-1] = l.CheckString(i)
+		parts[i-1] = strings.TrimSpace(l.CheckString(i))
 	}
 	l.Pop(t)
 	l.Push(lua.LString(path.Join(parts...)))
