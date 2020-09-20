@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"os"
 
 	copydir "github.com/otiai10/copy"
@@ -18,6 +19,43 @@ func fsCopydir(l *lua.LState) int {
 		l.RaiseError("unable to copy directory: %v", err)
 		return 0
 	}
+	return 1
+}
+
+func fsCopyfile(l *lua.LState) int {
+	dest := l.CheckString(1)
+	src := l.CheckString(2)
+	l.Pop(2)
+
+	sourceFileStat, err := os.Stat(src)
+	if err != nil {
+		l.RaiseError("unable to stat file %v: %v", src, err)
+	}
+
+	if !sourceFileStat.Mode().IsRegular() {
+		l.RaiseError("file %v is not a regular file", src)
+	}
+
+	source, err := os.Open(src)
+	if err != nil {
+		l.RaiseError("unable to open %v for reading: %v", src, err)
+	}
+	defer source.Close()
+
+	destination, err := os.Create(dest)
+	if err != nil {
+		l.RaiseError("unable to open %v for writing: %v", dest, err)
+	}
+	defer destination.Close()
+	nBytes, err := io.Copy(destination, source)
+	if err != nil {
+		l.RaiseError("unable to copy content: %v", err)
+	}
+	err = destination.Sync()
+	if err != nil {
+		l.RaiseError("unable to sync destination to disk: %v", err)
+	}
+	l.Push(lua.LNumber(float64(nBytes)))
 	return 1
 }
 

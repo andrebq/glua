@@ -269,6 +269,7 @@ func openEnv(l *lua.LState) int {
 func openFs(l *lua.LState) int {
 	mod := l.RegisterModule("fs", map[string]lua.LGFunction{
 		"copyDir":   fsCopydir,
+		"copyFile":  fsCopyfile,
 		"removeAll": fsRemoveAll,
 		"mkdir":     fsMkdir,
 	})

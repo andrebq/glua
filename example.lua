@@ -63,6 +63,7 @@ local ioutil = require('ioutil')
 fs.mkdir(filepath.join('testdir'), 0755)
 ioutil.writeText(filepath.join('testdir', 'file.txt'), 'Lua and Go is a powerful combination')
 fs.copyDir(filepath.join('testdir-copy'), filepath.join('testdir'))
+fs.copyFile(filepath.join('testdir-copy', 'file-copy.txt'), filepath.join('testdir-copy', 'file.txt'))
 fs.removeAll(filepath.join('testdir'))
 
 print("copy and dir management ok")
