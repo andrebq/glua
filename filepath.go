@@ -2,6 +2,7 @@ package main
 
 import (
 	"path/filepath"
+	"strings"
 
 	"github.com/mitchellh/go-homedir"
 	lua "github.com/yuin/gopher-lua"
@@ -15,7 +16,7 @@ func fpJoin(l *lua.LState) int {
 	}
 	parts := make([]string, t)
 	for i := 1; i <= t; i++ {
-		parts[i-1] = l.CheckString(i)
+		parts[i-1] = strings.TrimSpace(l.CheckString(i))
 	}
 	l.Pop(t)
 	l.Push(lua.LString(filepath.Join(parts...)))
