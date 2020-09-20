@@ -1,3 +1,5 @@
 *.exe
 glua
 auxiliar.txt
+testdir
+testdir*

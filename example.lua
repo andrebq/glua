@@ -52,3 +52,13 @@ if env.get("HI") ~= "WORLD" then
 else
     print("value is OK")
 end
+
+
+local fs = require('fs')
+local ioutil = require('ioutil')
+fs.mkdir(filepath.join('testdir'), 0755)
+ioutil.writeText(filepath.join('testdir', 'file.txt'), 'Lua and Go is a powerful combination')
+fs.copyDir(filepath.join('testdir-copy'), filepath.join('testdir'))
+fs.removeAll(filepath.join('testdir'))
+
+print("copy and dir management ok")

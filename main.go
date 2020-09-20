@@ -193,6 +193,8 @@ func loadLibs(L *lua.LState) {
 		{"template", openTemplate},
 		{"exec", openExec},
 		{"env", openEnv},
+		{"fs", openFs},
+		{"ioutil", openIoutil},
 	} {
 		if err := L.CallByParam(lua.P{
 			Fn:      L.NewFunction(pair.f),
@@ -258,6 +260,25 @@ func openEnv(l *lua.LState) int {
 	mod := l.RegisterModule("env", map[string]lua.LGFunction{
 		"set": envSet,
 		"get": envGet,
+	})
+	l.Push(mod)
+	return 1
+}
+
+func openFs(l *lua.LState) int {
+	mod := l.RegisterModule("fs", map[string]lua.LGFunction{
+		"copyDir":   fsCopydir,
+		"removeAll": fsRemoveAll,
+		"mkdir":     fsMkdir,
+	})
+	l.Push(mod)
+	return 1
+}
+
+func openIoutil(l *lua.LState) int {
+	mod := l.RegisterModule("ioutil", map[string]lua.LGFunction{
+		"appendText": ioutilAppendText,
+		"writeText":  ioutilWriteText,
 	})
 	l.Push(mod)
 	return 1
